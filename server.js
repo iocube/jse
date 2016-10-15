@@ -65,9 +65,9 @@ function handle_post_request(request, response) {
         }
 
         try {
-            let compiled = new vm.Script(jsCode.code);
+            let compiled = new vm.Script(jsCode.code, {filename: 'your-code.js', timeout: config.CODE_COMPILE_TIMEOUT_MS});
             let context = new vm.createContext(jsCode.context);
-            compiled.runInContext(context);
+            compiled.runInContext(context, {filename: 'your-code.js', timeout: config.CODE_EXECUTION_TIMEOUT_MS});
 
             console.log('code: \n\t', jsCode.code);
             console.log('context: \n\t', jsCode.context);
