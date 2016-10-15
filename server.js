@@ -2,7 +2,19 @@ const http = require('http');
 const vm = require('vm');
 const util = require('util');
 const config = require('./config');
-
+const validate = require('jsonschema').validate;
+const schema = {
+    type: 'object',
+    required: ['code', 'context'],
+    properties: {
+        code: {
+            type: 'string'
+        },
+        context: {
+            type: 'object'
+        }
+    }
+};
 
 const server = http.createServer();
 const HTTP_STATUS_CODE = {
@@ -38,8 +50,17 @@ function handle_post_request(request, response) {
             return;
         }
 
+        let validatorResult = validate(jsCode, schema);
+        if (validatorResult.errors.length > 0) {
+            let message = validatorResult.errors.map((error) => {
+                return error.stack;
+            });
+
+            http_bad_request(response, {name: 'ValidationError', message: message, stack: null});
+            return;
+        }
         if (typeof jsCode.context !== 'object') {
-            http_bad_request(response, {name: 'TypeError', message: 'context must be an object', stack: null});
+            http_bad_request(response, {name: 'ValidationError', message: 'context must be an object', stack: null});
             return;
         }
 
