@@ -3,6 +3,8 @@ const vm = require('vm');
 const util = require('util');
 const config = require('./config');
 const validate = require('jsonschema').validate;
+const url = require('url');
+
 const schema = {
     type: 'object',
     required: ['code', 'context'],
@@ -15,27 +17,46 @@ const schema = {
         }
     }
 };
-
 const server = http.createServer();
 const HTTP_STATUS_CODE = {
     OK: 200,
-    BAD_REQUEST: 400
+    BAD_REQUEST: 400,
+    NOT_FOUND: 404,
+    METHOD_NOT_ALLOWED: 405
 };
 
-function http_bad_request(response, json) {
-    response.statusCode = HTTP_STATUS_CODE.BAD_REQUEST;
+const routes = {
+    '/': {POST: execute_js_code},
+};
+
+function http_base_response(response, json, statusCode) {
+    response.statusCode = statusCode;
     response.setHeader('Content-Type', 'application/json');
-    console.log(json);
-    response.end(JSON.stringify(json));
+
+    if (json) {
+        response.end(JSON.stringify(json));
+    } else {
+        response.end();
+    }
+}
+
+function http_bad_request(response, json) {
+    http_base_response(response, json, HTTP_STATUS_CODE.BAD_REQUEST);
 }
 
 function http_ok(response, json) {
-    response.statusCode = HTTP_STATUS_CODE.OK;
-    response.setHeader('Content-Type', 'application/json');
-    response.end(JSON.stringify(json));
+    http_base_response(response, json, HTTP_STATUS_CODE.OK);
 }
 
-function handle_post_request(request, response) {
+function http_not_found(response, json) {
+    http_base_response(response, json, HTTP_STATUS_CODE.NOT_FOUND);
+}
+
+function http_method_not_allowed(response, json) {
+    http_base_response(response, json, HTTP_STATUS_CODE.METHOD_NOT_ALLOWED);
+}
+
+function execute_js_code(request, response) {
     let jsCode = '';
 
     request.on('data', (data) => {
@@ -83,19 +104,31 @@ function handle_post_request(request, response) {
     });
 }
 
+function isRouteExists(routes, path) {
+    return routes[path];
+}
+
+function isMethodAllowed(routes, path, method) {
+    return routes[path][method];
+}
+
 server.on('request', (request, response) => {
     console.log('--------------------------------------------------');
     console.log(`${new Date()}: ${request.method} ${request.url}`);
 
-    switch (request.method) {
-        case 'POST':
-            handle_post_request(request, response);
-            break;
-        default:
-            response.setHeader('Content-Type', 'application/json');
-            response.end(JSON.stringify({}));
-            break;
+    let requestedPath = url.parse(request.url).pathname;
+
+    if (!isRouteExists(routes, requestedPath)) {
+        http_not_found(response);
+        return;
     }
+
+    if (!isMethodAllowed(routes, requestedPath, request.method)) {
+        http_method_not_allowed(response);
+        return;
+    }
+
+    routes[requestedPath][request.method](request, response);
 });
 
 server.on('clientError', (err, socket) => {
