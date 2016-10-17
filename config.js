@@ -15,5 +15,6 @@ exports.modules = {
 
 exports.languages = {
     JAVASCRIPT: 'javascript',
-    COFFEESCRIPT: 'coffeescript'
+    COFFEESCRIPT: 'coffeescript',
+    TYPESCRIPT: 'typescript'
 };

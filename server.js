@@ -5,6 +5,7 @@ const config = require('./config');
 const validate = require('jsonschema').validate;
 const url = require('url');
 const coffeescript = require('coffee-script');
+const typescript = require('typescript');
 
 const schema = {
     type: 'object',
@@ -22,7 +23,8 @@ const schema = {
         language: {
             enum: [
                 config.languages.JAVASCRIPT,
-                config.languages.COFFEESCRIPT
+                config.languages.COFFEESCRIPT,
+                config.languages.TYPESCRIPT
             ]
         }
     }
@@ -108,6 +110,11 @@ function execute_js_code(request, response) {
                     // it makes access to context difficult
                     code = coffeescript.compile(jsCode.code, {bare: true});
                     console.log('language: coffeescript');
+                    break;
+                case config.languages.TYPESCRIPT:
+                    // remove 'use strict', otherwise javascript will throw an exception about undefined context variable
+                    code = typescript.transpileModule(jsCode.code, {compilerOptions: {noImplicitUseStrict: true}}).outputText;
+                    console.log('language: typescript');
                     break;
             }
 
