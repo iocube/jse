@@ -14,6 +14,9 @@ const schema = {
         },
         context: {
             type: 'object'
+        },
+        modules: {
+            type: 'array'
         }
     }
 };
@@ -27,6 +30,7 @@ const HTTP_STATUS_CODE = {
 
 const routes = {
     '/': {POST: execute_js_code},
+    '/modules': {GET: listModules}
 };
 
 function http_base_response(response, json, statusCode) {
@@ -88,7 +92,21 @@ function execute_js_code(request, response) {
         try {
             let compiled = new vm.Script(jsCode.code, {filename: 'your-code.js', timeout: config.CODE_COMPILE_TIMEOUT_MS});
             let context = new vm.createContext(jsCode.context);
+
+            // import dependencies
+            jsCode.modules.forEach(function(moduleName) {
+                if (config.modules.hasOwnProperty(moduleName)) {
+                    let variableName = config.modules[moduleName];
+                    context[variableName] = require(`${config.MODULES_DIR}/${moduleName}`);
+                }
+            });
+
             compiled.runInContext(context, {filename: 'your-code.js', timeout: config.CODE_EXECUTION_TIMEOUT_MS});
+
+            // clear context from imported modules
+            jsCode.modules.forEach(function(moduleName) {
+                delete context[moduleName];
+            });
 
             console.log('code: \n\t', jsCode.code);
             console.log('context: \n\t', jsCode.context);
@@ -105,11 +123,18 @@ function execute_js_code(request, response) {
 }
 
 function isRouteExists(routes, path) {
-    return routes[path];
+    return routes[path] || routes[path + '/'];
 }
 
 function isMethodAllowed(routes, path, method) {
     return routes[path][method];
+}
+
+function listModules(request, response) {
+    const installed = require('./modules/package.json');
+    const whitelisted = config.modules;
+
+    http_ok(response, {installed: installed.dependencies, whitelisted: whitelisted});
 }
 
 server.on('request', (request, response) => {
