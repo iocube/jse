@@ -4,10 +4,11 @@ const util = require('util');
 const config = require('./config');
 const validate = require('jsonschema').validate;
 const url = require('url');
+const coffeescript = require('coffee-script');
 
 const schema = {
     type: 'object',
-    required: ['code', 'context'],
+    required: ['code', 'context', 'language'],
     properties: {
         code: {
             type: 'string'
@@ -17,6 +18,12 @@ const schema = {
         },
         modules: {
             type: 'array'
+        },
+        language: {
+            enum: [
+                config.languages.JAVASCRIPT,
+                config.languages.COFFEESCRIPT
+            ]
         }
     }
 };
@@ -90,7 +97,21 @@ function execute_js_code(request, response) {
         }
 
         try {
-            let compiled = new vm.Script(jsCode.code, {filename: 'your-code.js', timeout: config.CODE_COMPILE_TIMEOUT_MS});
+            let code = '';
+            switch (jsCode.language) {
+                case config.languages.JAVASCRIPT:
+                    code = jsCode.code;
+                    console.log('language: javascript');
+                    break;
+                case config.languages.COFFEESCRIPT:
+                    // --bare, without it code will be placed inside wrapper
+                    // it makes access to context difficult
+                    code = coffeescript.compile(jsCode.code, {bare: true});
+                    console.log('language: coffeescript');
+                    break;
+            }
+
+            let compiled = new vm.Script(code, {filename: 'your-code.js', timeout: config.CODE_COMPILE_TIMEOUT_MS});
             let context = new vm.createContext(jsCode.context);
 
             // import dependencies
@@ -108,7 +129,7 @@ function execute_js_code(request, response) {
                 delete context[moduleName];
             });
 
-            console.log('code: \n\t', jsCode.code);
+            console.log('code: \n\t', code);
             console.log('context: \n\t', jsCode.context);
         } catch (error) {
             http_bad_request(response, {name: error.name, message: error.message, stack: error.stack});

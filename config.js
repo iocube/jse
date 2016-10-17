@@ -12,3 +12,8 @@ exports.modules = {
     'faker': 'faker',
     'underscore': '_'
 };
+
+exports.languages = {
+    JAVASCRIPT: 'javascript',
+    COFFEESCRIPT: 'coffeescript'
+};

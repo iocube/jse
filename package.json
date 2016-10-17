@@ -10,6 +10,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "coffee-script": "^1.11.1",
     "jsonschema": "^1.1.0"
   }
 }
