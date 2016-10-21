@@ -21,11 +21,8 @@ const schema = {
             type: 'array'
         },
         language: {
-            enum: [
-                config.languages.JAVASCRIPT,
-                config.languages.COFFEESCRIPT,
-                config.languages.TYPESCRIPT
-            ]
+            enum: config.languages
+                .map((language) => { return language.name; })
         }
     }
 };
@@ -98,20 +95,33 @@ function execute_js_code(request, response) {
             return;
         }
 
+        let language = config.languages.filter((supportedLanguage) => {
+            return supportedLanguage.name === jsCode.language;
+        })[0];
+
+        if (!language.enabled) {
+            http_bad_request(response, {
+                name: 'LanguageError',
+                message: `${jsCode.name} is not enabled`,
+                stack: null
+            });
+            return;
+        }
+
         try {
             let code = '';
-            switch (jsCode.language) {
-                case config.languages.JAVASCRIPT:
+            switch (language.name) {
+                case 'javascript':
                     code = jsCode.code;
                     console.log('language: javascript');
                     break;
-                case config.languages.COFFEESCRIPT:
+                case 'coffescript':
                     // --bare, without it code will be placed inside wrapper
                     // it makes access to context difficult
                     code = coffeescript.compile(jsCode.code, {bare: true});
                     console.log('language: coffeescript');
                     break;
-                case config.languages.TYPESCRIPT:
+                case 'typescript':
                     // remove 'use strict', otherwise javascript will throw an exception about undefined context variable
                     code = typescript.transpileModule(jsCode.code, {compilerOptions: {noImplicitUseStrict: true}}).outputText;
                     console.log('language: typescript');

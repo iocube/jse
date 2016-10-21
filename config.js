@@ -13,8 +13,8 @@ exports.modules = {
     'underscore': '_'
 };
 
-exports.languages = {
-    JAVASCRIPT: 'javascript',
-    COFFEESCRIPT: 'coffeescript',
-    TYPESCRIPT: 'typescript'
-};
+exports.languages = [
+    {name: 'javascript', enabled: true},
+    {name: 'coffescript', enabled: true},
+    {name: 'typescript', enabled: true}
+];
