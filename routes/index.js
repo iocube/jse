@@ -80,19 +80,26 @@ router.post('/', function(request, response) {
         let context = new vm.createContext(jsCode.context);
 
         // import dependencies
-        jsCode.modules.forEach(function(moduleName) {
-            if (config.modules.hasOwnProperty(moduleName)) {
-                let variableName = config.modules[moduleName];
-                context[variableName] = require(`${config.MODULES_DIR}/${moduleName}`);
-            }
-        });
+        if (jsCode.modules && jsCode.modules.length) {
+            console.log('modules: ', jsCode.modules);
+            jsCode.modules.forEach(function(moduleName) {
+                if (config.modules.hasOwnProperty(moduleName)) {
+                    let variableName = config.modules[moduleName];
+                    context[variableName] = require(`${config.MODULES_DIR}/${moduleName}`);
+                } else {
+                    throw new Error(`Module '${moduleName}' is not supported or disabled`);
+                }
+            });
+        }
 
         compiled.runInContext(context, {filename: 'your-code.js', timeout: config.CODE_EXECUTION_TIMEOUT_MS});
 
         // clear context from imported modules
-        jsCode.modules.forEach(function(moduleName) {
-            delete context[moduleName];
-        });
+        if (jsCode.modules && jsCode.modules.length) {
+            jsCode.modules.forEach(function(moduleName) {
+                delete context[moduleName];
+            });
+        }
 
         console.log('code: \n\t', code);
         console.log('context: \n\t', jsCode.context);
