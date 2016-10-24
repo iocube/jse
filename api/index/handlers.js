@@ -83,7 +83,7 @@ function executeCode(request, response) {
             jsCode.modules.forEach(function(moduleName) {
                 if (config.modules.hasOwnProperty(moduleName)) {
                     let variableName = config.modules[moduleName];
-                    context[variableName] = require(`${config.MODULES_DIR}/${moduleName}`);
+                    context[variableName] = require(`../../modules/node_modules/${moduleName}`);
                 } else {
                     throw new Error(`Module '${moduleName}' is not supported or disabled`);
                 }
