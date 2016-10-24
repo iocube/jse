@@ -15,6 +15,6 @@ exports.modules = {
 
 exports.languages = [
     {name: 'javascript', enabled: true},
-    {name: 'coffescript', enabled: true},
+    {name: 'coffeescript', enabled: true},
     {name: 'typescript', enabled: true}
 ];

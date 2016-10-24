@@ -1,13 +1,12 @@
 const express = require('express');
 const vm = require('vm');
-const validate = require('jsonschema').validate;
+const jsonschema = require('jsonschema');
 const coffeescript = require('coffee-script');
 const typescript = require('typescript');
 
-const config = require('../config');
-const httpcode = require('../http-code');
+const config = require('../../config');
+const httpcode = require('../../http-code');
 
-const router = express.Router();
 const schema = {
     type: 'object',
     required: ['code', 'context', 'language'],
@@ -28,11 +27,10 @@ const schema = {
     }
 };
 
-
-router.post('/', function(request, response) {
+function executeCode(request, response) {
     let jsCode = request.body;
 
-    let validatorResult = validate(jsCode, schema);
+    let validatorResult = jsonschema.validate(jsCode, schema);
     if (validatorResult.errors.length > 0) {
         let message = validatorResult.errors.map((error) => {
             return error.stack;
@@ -63,7 +61,7 @@ router.post('/', function(request, response) {
                 code = jsCode.code;
                 console.log('language: javascript');
                 break;
-            case 'coffescript':
+            case 'coffeescript':
                 // --bare, without it code will be placed inside wrapper
                 // it makes access to context difficult
                 code = coffeescript.compile(jsCode.code, {bare: true});
@@ -114,7 +112,7 @@ router.post('/', function(request, response) {
     console.log('result: \n\t', jsCode.context);
     console.log('--------------------------------------------------');
 
-    response.json({context: jsCode.context});
-});
+    return response.json({context: jsCode.context});
+}
 
-module.exports = router;
+exports.executeCode = executeCode;

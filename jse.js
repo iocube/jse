@@ -1,14 +1,13 @@
 function run(callback) {
     const express = require('express');
     const bodyParser = require('body-parser');
-    const cors = require('cors');
 
     const config = require('./config');
     const middleware = require('./middleware');
 
     // routes
-    const modules = require('./routes/modules');
-    const index = require('./routes/index');
+    const modules = require('./api/index/routes').router;
+    const index = require('./api/modules/routes').router;
 
 
     const app = express();

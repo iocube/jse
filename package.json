@@ -4,7 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test-api": "./node_modules/jasmine/bin/jasmine.js JASMINE_CONFIG_PATH=jasmine.api.json",
+    "test-unit": "./node_modules/jasmine/bin/jasmine.js JASMINE_CONFIG_PATH=jasmine.unit.json",
     "start": "node server.js"
   },
   "author": "",

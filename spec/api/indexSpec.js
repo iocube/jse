@@ -108,13 +108,13 @@ describe('indexSpec', function() {
         });
 
         describe('coffeescript', function() {
-            it('should execute coffescript code', function(done) {
+            it('should execute coffeescript code', function(done) {
                 var payload = {
                     code: 'square = (x) -> x * x\nlist = [square(n) for n in list]',
                     context: {
                         list: [1, 2, 3]
                     },
-                    language: 'coffescript'
+                    language: 'coffeescript'
                 };
 
                 request.post(endpoint, {json: true, body: payload}, function(error, response, body) {
@@ -130,7 +130,7 @@ describe('indexSpec', function() {
                     context: {
                         list: [1, 2, 3]
                     },
-                    language: 'coffescript'
+                    language: 'coffeescript'
                 };
 
                 request.post(endpoint, {json: true, body: payload}, function(error, response) {
