@@ -2,13 +2,13 @@
   "name": "jse",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "jse.js",
   "scripts": {
     "test-api": "./node_modules/jasmine/bin/jasmine.js JASMINE_CONFIG_PATH=jasmine.api.json",
     "test-unit": "./node_modules/jasmine/bin/jasmine.js JASMINE_CONFIG_PATH=jasmine.unit.json",
-    "start": "node server.js"
+    "start": "node jse.js"
   },
-  "author": "",
+  "author": "Vladimir Zeifman",
   "license": "MIT",
   "dependencies": {
     "body-parser": "^1.15.2",
