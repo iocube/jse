@@ -3,6 +3,7 @@ const vm = require('vm');
 const jsonschema = require('jsonschema');
 const coffeescript = require('coffee-script');
 const typescript = require('typescript');
+const util = require('util');
 
 const config = require('../../config');
 const httpcode = require('../../http-code');
@@ -100,7 +101,7 @@ function executeCode(request, response) {
         }
 
         console.log('code: \n\t', code);
-        console.log('context: \n\t', jsCode.context);
+        console.log('context: \n\t', util.inspect(jsCode.context, {depth: null}));
     } catch (error) {
         return response.status(httpcode.BAD_REQUEST).json({
             name: error.name,
@@ -109,7 +110,7 @@ function executeCode(request, response) {
         });
     }
 
-    console.log('result: \n\t', jsCode.context);
+    console.log('result: \n\t', util.inspect(jsCode.context, {depth: null}));
     console.log('--------------------------------------------------');
 
     return response.json({context: jsCode.context});
