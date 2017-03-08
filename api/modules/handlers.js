@@ -5,13 +5,12 @@ const modules = require('../../modules/package.json').dependencies;
 function listInstalledModules(request, response) {
     let listOfModules = [];
 
-    for (let name of modules) {
+    for (let name of Object.keys(modules)) {
         listOfModules.push({
           name: name,
           alias: moduleToAlias[name] || undefined
         });
       }
-
     response.json(listOfModules);
 }
 
