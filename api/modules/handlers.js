@@ -1,10 +1,18 @@
-const config = require('../../config');
-const installedModules = require('../../modules/package.json');
+const moduleToAlias = require('../../config').moduleToAlias;
+const modules = require('../../modules/package.json').dependencies;
 
 
 function listInstalledModules(request, response) {
-    const whitelisted = config.modules;
-    response.json({installed: installedModules.dependencies, whitelisted: whitelisted});
+    let listOfModules = [];
+
+    for (let name of modules) {
+        listOfModules.push({
+          name: name,
+          alias: moduleToAlias[name] || undefined
+        });
+      }
+
+    response.json(listOfModules);
 }
 
 exports.listInstalledModules = listInstalledModules;

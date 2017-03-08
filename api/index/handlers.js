@@ -80,14 +80,13 @@ function executeCode(request, response) {
 
         // import dependencies
         if (jsCode.modules && jsCode.modules.length) {
-            console.log('modules: ', jsCode.modules);
             jsCode.modules.forEach(function(moduleName) {
-                if (config.modules.hasOwnProperty(moduleName)) {
-                    let variableName = config.modules[moduleName];
-                    context[variableName] = require(`../../modules/node_modules/${moduleName}`);
-                } else {
-                    throw new Error(`Module '${moduleName}' is not supported or disabled`);
-                }
+              if (config.moduleToAlias.hasOwnProperty(moduleName)) {
+                  let variableName = config.moduleToAlias[moduleName];
+                  context[variableName] = require(`../../modules/node_modules/${moduleName}`);
+              } else {
+                  context[moduleName] = require(`../../modules/node_modules/${moduleName}`);
+              }
             });
         }
 
@@ -96,7 +95,12 @@ function executeCode(request, response) {
         // clear context from imported modules
         if (jsCode.modules && jsCode.modules.length) {
             jsCode.modules.forEach(function(moduleName) {
-                delete context[moduleName];
+                if (config.moduleToAlias.hasOwnProperty(moduleName)) {
+                    let variableName = config.moduleToAlias[moduleName];
+                    delete context[variableName];
+                } else {
+                    delete context[moduleName];
+                }
             });
         }
 
