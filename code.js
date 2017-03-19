@@ -21,20 +21,20 @@ class Code {
         const transpiled = new this.transpiler(this.code).transpile(transpilerOptions);
         const compiled = new vm.Script(transpiled, compilerOptions);
 
-        this.loadNodeModulesToContext();
+        this._loadNodeModulesToContext();
         compiled.runInNewContext(this.context, runOptions);
-        this.unloadNodeModulesFromContext();
+        this._unloadNodeModulesFromContext();
 
         return this.context;
     }
 
-    loadNodeModulesToContext() {
+    _loadNodeModulesToContext() {
         this.nodeModules.forEach(function(nodeModule) {
             this.context[nodeModule.alias] = nodeModule.doRequire();
         });
     }
 
-    unloadNodeModulesFromContext() {
+    _unloadNodeModulesFromContext() {
         this.nodeModules.forEach(function(nodeModule) {
             delete this.context[nodeModule.alias];
         });
