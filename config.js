@@ -2,6 +2,9 @@ const PORT = 8000;
 const HOSTNAME = 'localhost';
 const CODE_COMPILE_TIMEOUT_MS = 500;
 const CODE_EXECUTION_TIMEOUT_MS = 500;
+const MODULES_DIR = `${__dirname}/modules/node_modules`;
+const MODULES_PACKAGE_JSON = require(`${__dirname}/modules/package.json`);
+
 
 exports.PORT = PORT;
 exports.HOSTNAME = HOSTNAME;
@@ -28,7 +31,6 @@ exports.COFFEESCRIPT_TRANSPILER_OPTIONS = {
     bare: true
 };
 
-exports.MODULES_DIR = '../modules/node_modules';
 exports.moduleToAlias = {
     'faker': 'faker',
     'underscore': '_'
@@ -40,3 +42,16 @@ exports.languages = [
     {name: 'typescript', enabled: true}
 ];
 
+exports.MODULES = [
+    registerModule('faker'),
+    registerModule('underscore', '_')
+];
+
+function registerModule(name, alias=undefined) {
+    return {
+        path: `${MODULES_DIR}/${name}`,
+        name: name,
+        alias: alias,
+        version: MODULES_PACKAGE_JSON.dependencies[name]
+    }
+}
