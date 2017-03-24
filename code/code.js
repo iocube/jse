@@ -29,13 +29,13 @@ class Code {
     }
 
     _loadNodeModulesToContext() {
-        this.nodeModules.forEach(function(nodeModule) {
+        this.nodeModules.forEach((nodeModule) => {
             this.context[nodeModule.alias] = nodeModule.doRequire();
         });
     }
 
     _unloadNodeModulesFromContext() {
-        this.nodeModules.forEach(function(nodeModule) {
+        this.nodeModules.forEach((nodeModule) => {
             delete this.context[nodeModule.alias];
         });
     }

@@ -1,8 +1,9 @@
 describe('codeSpec', function() {
     "use strict";
 
-    const Code = require('../../code').Code;
+    const Code = require('../../code/code').Code;
     const config = require('../../config');
+    const NodeModule = require('../../code/nodeModule').NodeModule;
 
     beforeEach(function() {});
 
@@ -49,10 +50,28 @@ describe('codeSpec', function() {
     });
 
     it('should load module in to context', function() {
-        // TODO
+        const nodeModule = new NodeModule('../modules/node_modules/mymodule', 'mymodule');
+        const code = new Code('answer = mymodule(1, 1);', 'javascript', {answer: 0}, [nodeModule]);
+        const myModule = {
+            add: function(x, y) {
+                return x + y;
+            }
+        };
+
+        spyOn(nodeModule, 'doRequire').and.returnValue(myModule.add);
+        const result = code.run();
+        expect(result.answer).toEqual(2);
     });
 
     it('should unload module from context', function() {
-        // TODO
+        const nodeModule = new NodeModule('../modules/node_modules/mymodule', 'mymodule');
+        const code = new Code('mymodule();', 'javascript', {}, [nodeModule]);
+        const myModule = {
+            add: function() {}
+        };
+
+        spyOn(nodeModule, 'doRequire').and.returnValue(myModule.add);
+        const result = code.run();
+        expect(result.hasOwnProperty('mymodule')).toEqual(false);
     });
 });
