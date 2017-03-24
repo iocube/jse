@@ -6,8 +6,8 @@ function run(callback) {
     const middleware = require('./middleware');
 
     // routes
-    const modules = require('./api/index/routes').router;
-    const index = require('./api/modules/routes').router;
+    const index = require('./api/index/routes').router;
+    const modules = require('./api/modules').router;
 
 
     const app = express();

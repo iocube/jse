@@ -42,16 +42,19 @@ exports.languages = [
     {name: 'typescript', enabled: true}
 ];
 
-exports.MODULES = [
+exports.MODULES = new Map([
     registerModule('faker'),
     registerModule('underscore', '_')
-];
+]);
 
 function registerModule(name, alias=undefined) {
-    return {
-        path: `${MODULES_DIR}/${name}`,
-        name: name,
-        alias: alias,
-        version: MODULES_PACKAGE_JSON.dependencies[name]
-    }
+    return [
+        name,
+        {
+            path: `${MODULES_DIR}/${name}`,
+            name: name,
+            alias: alias,
+            version: MODULES_PACKAGE_JSON.dependencies[name]
+        }
+    ];
 }
