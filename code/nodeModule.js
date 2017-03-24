@@ -10,4 +10,4 @@ class NodeModule {
 }
 
 
-exports.nodeModule = NodeModule;
+exports.NodeModule = NodeModule;
