@@ -19,7 +19,7 @@ $ npm install
 to see how to install and include new modules, see [modules/README.md](/modules/README.md).
 
 ## Running
-`$ node jse.js` or `$ npm start`
+`$ node index.js` or `$ npm start`
 
 ## Unit Tests
 `$ npm run test-unit`

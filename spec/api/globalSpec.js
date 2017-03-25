@@ -1,4 +1,4 @@
-const jse = require('../../jse');
+const jse = require('../../index');
 
 
 var server;
