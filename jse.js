@@ -6,7 +6,7 @@ function run(callback) {
     const middleware = require('./middleware');
 
     // routes
-    const index = require('./api/index/routes').router;
+    const code = require('./api/code').router;
     const modules = require('./api/modules').router;
 
 
@@ -14,7 +14,7 @@ function run(callback) {
 
     app.use(bodyParser.json());
     app.use(middleware.cors);
-    app.use(index);
+    app.use(code);
     app.use(modules);
     app.use(middleware.errorHandler);
 

@@ -37,9 +37,9 @@ exports.moduleToAlias = {
 };
 
 exports.languages = [
-    {name: 'javascript', enabled: true},
-    {name: 'coffeescript', enabled: true},
-    {name: 'typescript', enabled: true}
+    {name: 'javascript', enabled: true, transpilerOptions: {}},
+    {name: 'coffeescript', enabled: true, transpilerOptions: exports.COFFEESCRIPT_TRANSPILER_OPTIONS},
+    {name: 'typescript', enabled: true, transpilerOptions: exports.TYPESCRIPT_TRANSPILER_OPTIONS}
 ];
 
 exports.MODULES = new Map([
