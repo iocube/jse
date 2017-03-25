@@ -7,6 +7,7 @@ const cors = function(request, response, next) {
 };
 
 const errorHandler = function (error, request, response, next) {
+    console.log(error);
     response.status(error.statusCode).json({
         name: error.name,
         message: error.message,
