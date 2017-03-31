@@ -8,7 +8,7 @@ const httpcode = require('../http-code');
 const code = require('../code/code');
 const Code = code.Code;
 const NodeModule = require('../code/nodeModule').NodeModule;
-
+const logger = require('../logger').logger;
 
 router.post('/code', runCode);
 
@@ -84,9 +84,7 @@ function runCode(request, response) {
             config.VM_RUN_IN_CONTEXT_OPTIONS
         );
 
-        console.log('code: \n', code);
-        console.log('context: \n\t', util.inspect(context, {depth: null}));
-        console.log('--------------------------------------------------');
+        logger.info(({code: code, context: context}));
         return response.json({context: context});
     } catch (error) {
         return response.status(httpcode.BAD_REQUEST).json({
