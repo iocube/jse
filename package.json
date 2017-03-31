@@ -15,6 +15,7 @@
     "coffee-script": "^1.11.1",
     "express": "^4.14.0",
     "jsonschema": "^1.1.0",
+    "morgan": "^1.8.1",
     "typescript": "^2.0.3"
   },
   "devDependencies": {

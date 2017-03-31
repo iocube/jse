@@ -12,6 +12,7 @@ function run(callback) {
 
     const app = express();
 
+    app.use(middleware.accessLogger());
     app.use(bodyParser.json());
     app.use(middleware.cors);
     app.use(code);

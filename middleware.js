@@ -1,3 +1,7 @@
+const morgan = require('morgan');
+const path = require('path');
+const fs = require('fs');
+
 const cors = function(request, response, next) {
     response.header('Access-Control-Allow-Origin', '*');
     response.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS');
@@ -15,5 +19,13 @@ const errorHandler = function (error, request, response, next) {
     });
 };
 
+const accessLogger = function(filename = 'access.log') {
+    const accessLogStream = fs.createWriteStream(path.join(__dirname, filename), {flags: 'a'});
+
+    return morgan('combined', {stream: accessLogStream});
+};
+
+
 exports.cors = cors;
 exports.errorHandler = errorHandler;
+exports.accessLogger = accessLogger;
