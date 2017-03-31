@@ -31,11 +31,6 @@ exports.COFFEESCRIPT_TRANSPILER_OPTIONS = {
     bare: true
 };
 
-exports.moduleToAlias = {
-    'faker': 'faker',
-    'underscore': '_'
-};
-
 exports.languages = [
     {name: 'javascript', enabled: true, transpilerOptions: {}},
     {name: 'coffeescript', enabled: true, transpilerOptions: exports.COFFEESCRIPT_TRANSPILER_OPTIONS},
